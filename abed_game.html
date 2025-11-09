@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>مغامرات عبد الرحمن</title>
+<style>
+  body { font-family: Arial, sans-serif; background-color: #f0f8ff; text-align: center; }
+  #gameArea { position: relative; width: 600px; height: 400px; margin: 20px auto; background-color: #a2d5f2; border: 2px solid #000; overflow: hidden; }
+  #player { position: absolute; bottom: 20px; left: 50px; width: 40px; height: 40px; background-color: #ff6347; border-radius: 10px; }
+  #treasure { position: absolute; top: 20px; right: 50px; width: 40px; height: 40px; background-color: gold; border-radius: 50%; }
+  #message { margin-top: 20px; font-size: 20px; color: green; }
+  .control-btn { width: 60px; height: 60px; margin: 5px; font-size: 20px; }
+  #controls { margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>مغامرات عبد الرحمن</h1>
+<div id="gameArea">
+  <div id="player"></div>
+  <div id="treasure"></div>
+</div>
+<p>استخدم الأسهم أو أزرار التحكم لتحريك عبد الرحمن. اجمع الكنز!</p>
+<p id="message"></p>
+<div id="controls">
+  <button class="control-btn" id="up">↑</button><br>
+  <button class="control-btn" id="left">←</button>
+  <button class="control-btn" id="down">↓</button>
+  <button class="control-btn" id="right">→</button>
+</div>
+
+<script>
+const player = document.getElementById('player');
+const treasure = document.getElementById('treasure');
+const message = document.getElementById('message');
+let playerPos = { x: 50, y: 340 };
+const step = 20;
+
+function updatePlayer() {
+  player.style.left = playerPos.x + 'px';
+  player.style.top = playerPos.y + 'px';
+}
+
+function checkCollision() {
+  const playerRect = player.getBoundingClientRect();
+  const treasureRect = treasure.getBoundingClientRect();
+  if (!(playerRect.right < treasureRect.left ||
+        playerRect.left > treasureRect.right ||
+        playerRect.bottom < treasureRect.top ||
+        playerRect.top > treasureRect.bottom)) {
+    message.textContent = 'مبروك! عبد الرحمن وجد الكنز! 🎉';
+  }
+}
+
+function movePlayer(direction) {
+  if(direction === 'right' && playerPos.x + step < 560) playerPos.x += step;
+  if(direction === 'left' && playerPos.x - step > 0) playerPos.x -= step;
+  if(direction === 'up' && playerPos.y - step > 0) playerPos.y -= step;
+  if(direction === 'down' && playerPos.y + step < 360) playerPos.y += step;
+  updatePlayer();
+  checkCollision();
+}
+
+// التحكم عن طريق الكيبورد
+window.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowRight') movePlayer('right');
+  if(e.key === 'ArrowLeft') movePlayer('left');
+  if(e.key === 'ArrowUp') movePlayer('up');
+  if(e.key === 'ArrowDown') movePlayer('down');
+});
+
+// التحكم عن طريق الأزرار على الموبايل
+document.getElementById('up').addEventListener('click', () => movePlayer('up'));
+document.getElementById('down').addEventListener('click', () => movePlayer('down'));
+document.getElementById('left').addEventListener('click', () => movePlayer('left'));
+document.getElementById('right').addEventListener('click', () => movePlayer('right'));
+
+updatePlayer();
+</script>
+</body>
+</html>
